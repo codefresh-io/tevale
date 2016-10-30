@@ -1,0 +1,34 @@
+{
+  "name": "cf-expression-parser",
+  "version": "0.9.0",
+  "description": "A parser that accepts a set of named objects (with properties) and an expression, verifies syntax and evaluates the expression.",
+  "homepage": "https://github.com/codefresh-io/cf-expression-parser",
+  "author": "Alon Diamant (https://github.com/advance512)",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:codefresh-io/cf-expression-parser.git"
+  },
+  "license": "MIT",
+  "scripts": {
+    "setup": "npm install && gulp"
+  },
+  "devDependencies": {
+    "babel": "^5.6.7",
+    "babel-eslint": "^4.1.8",
+    "chai": "^3.0.0",
+    "gulp": "^3.9.0",
+    "gulp-eslint": "^0.14.0",
+    "gulp-istanbul": "^0.10.0",
+    "gulp-load-plugins": "^1.0.0-rc.1",
+    "gulp-mocha": "^2.1.2",
+    "gulp-rename": "^1.2.2",
+    "gulp-sequence": "^0.3.2",
+    "isparta": "^3.0.3",
+    "mocha": "^2.2.5",
+    "sinon": "^1.15.3",
+    "sinon-chai": "^2.8.0"
+  },
+  "dependencies": {
+    "jsep": "^0.3.0"
+  }
+}
