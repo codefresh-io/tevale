@@ -1,10 +1,13 @@
-// Library that can
+// A parser that accepts a set of named objects (with properties) and an expression, validates
+// syntax and evaluates the expression.
+
+"use strict";
 
 //------------------------------------------------------------------------------
 // Requirements
 //------------------------------------------------------------------------------
 
-import parse from 'jsep';
+const jsep = require('jsep');
 
 //------------------------------------------------------------------------------
 // Helpers
@@ -23,8 +26,7 @@ import parse from 'jsep';
 function validateSingleExpression(expression, variables) {
 
     try {
-        parse(expression);
-
+        jsep(expression, variables);
     } catch (err) {
         return [err.message];
     }
@@ -44,8 +46,7 @@ function evaluateSingleExpression(expression, variables) {
     return true;
 }
 
-
-export {
+module.exports = {
     evaluateSingleExpression,
     validateSingleExpression,
 };

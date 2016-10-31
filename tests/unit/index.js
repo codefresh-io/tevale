@@ -1,4 +1,6 @@
-import { evaluateSingleExpression, validateSingleExpression } from "../../src/expression_parser";
+"use strict";
+
+const expression_evaluator = require("../../src/expression_evaluator");
 
 const exampleVariables = {
     'somePositiveNumericVariable': 123,
@@ -530,24 +532,29 @@ const expressionsAndExpectedResults = {
 describe(
     'Verify expressions: ', () => {
 
-        for (const testCaseName of expressionsAndExpectedResults.keys()) {
+        // TODO: Ugh, why can't I just do expressionsAndExpectedResults.keys()???
+        for (let testCaseName of Object.keys(expressionsAndExpectedResults)) {
+
+            console.log(testCaseName);
+            const testCase = expressionsAndExpectedResults[testCaseName];
 
             it(
                 `expression:  '${testCase.expression}'`, () => {
-                    const testCase = expressionsAndExpectedResults.testCase;
 
                     try {
                         const expectedValidity = testCase.expectedValidity;
                         const expectedResult   = testCase.expectedResult;
 
                         const actualValidity =
-                                  validateSingleExpression(
+                                  expression_evaluator.validateSingleExpression(
                                       testCase.expression,
                                       testCase.expression
                                   ) === [];
                         const actualResult   =
-                                  evaluateSingleExpression(testCase.expression,
-                                      testCase.expression);
+                                  expression_evaluator.evaluateSingleExpression(
+                                      testCase.expression,
+                                      testCase.expression
+                                  );
 
                         expect(actualValidity).to.equal(expectedValidity);
                         expect(actualResult).to.equal(expectedResult);

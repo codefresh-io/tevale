@@ -1,6 +1,6 @@
 const gulp       = require('gulp');
 const isparta    = require('isparta');
-const babel      = require('babel/register');
+// const babel      = require('babel/register');
 const plugins    = require('gulp-load-plugins')();
 
 function unitTests() {
@@ -9,7 +9,7 @@ function unitTests() {
             plugins.mocha(
                 {
                     reporter: 'spec',
-                    compilers: { js: babel },
+                    //compilers: { js: babel },
                 }
             )
         );

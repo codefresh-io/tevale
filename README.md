@@ -1,4 +1,4 @@
-# Codefresh Expression Parser
+# Codefresh Expression Evaluator
 
 > A parser that accepts a set of named objects (with properties) and an expression, verifies syntax and evaluates the expression.
 
