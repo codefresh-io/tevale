@@ -1,16 +1,18 @@
-"use strict";
+'use strict';
 
 // TODO: Use setup.js...
 const chai = require('chai');
+// const sinon = require('sinon');
+
 const expect = chai.expect;
-const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 
 chai.use(sinonChai);
 
-const expression_evaluator = require("../../src/expression_evaluator");
+const expressionEvaluator = require('../../src/expression_evaluator');
 
-// import { evaluateSingleExpression, validateSingleExpression } from "../../src/expression_evaluator";
+// import { evaluateSingleExpression, validateSingleExpression }
+//     from "../../src/expression_evaluator";
 // const expression_evaluator = {
 //     evaluateSingleExpression,
 //     validateSingleExpression
@@ -742,6 +744,48 @@ const expressionsAndExpectedResults = {
         expectedResult: false,
     },
 
+    'unsupported operator': {
+        expression: '15 | 33',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'weird operator 1': {
+        expression: '5555 @ 33333',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'weird operator 2': {
+        expression: '5555 $ 33333',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'weird operator 3': {
+        expression: '5555 \\ 33333',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'weird operator 4': {
+        expression: '5555 : 33333',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'weird operator 5': {
+        expression: '5555 :::: 33333',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
     'string division 1': {
         expression: 'stringValue / 5',
         variableObjects: exampleVariables,
@@ -773,25 +817,536 @@ const expressionsAndExpectedResults = {
     // ------------------
 
     'function 1': {
-        expression: 'stringValue.toUpperCase()',
+        expression: 'upper(stringValue)',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
     },
 
     'function 2': {
-        expression: 'stringValue.substr(2, 4)',
+        expression: 'substring(stringValue, 2, 4)',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
     },
 
     'function 3': {
-        expression: 'stringValue.substr(20, 40)',
+        expression: 'substring(stringValue, 20, 40)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: false,
+    },
+
+    'bad function call 1': {
+        expression: 'upper()',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'bad function call 2': {
+        expression: 'lower(123)',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'bad function call 3': {
+        expression: 'lower("asd", 3, 5)',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'bad function call 4': {
+        expression: 'trim(null)',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'bad function call 5': {
+        expression: 'Number(false)',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+
+    // ------------------
+
+    'string conversion 1': {
+        expression: 'String("123")',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
     },
+
+    'string conversion 2': {
+        expression: 'String(123)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'string conversion 3': {
+        expression: 'String("0")',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'string conversion 4': {
+        expression: 'String(0)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'number conversion 1': {
+        expression: 'Number("123")',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'number conversion 2': {
+        expression: 'Number(123)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'number conversion 3': {
+        expression: 'Number("0")',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: false,
+    },
+
+    'number conversion 4': {
+        expression: 'Number(0)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: false,
+    },
+
+    'number conversion 5': {
+        expression: 'Number("hello there")',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'boolean conversion 1': {
+        expression: 'Boolean("123")',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'boolean conversion 2': {
+        expression: 'Boolean(123)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'boolean conversion 3': {
+        expression: 'Boolean("0")',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'boolean conversion 4': {
+        expression: 'Boolean(0)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: false,
+    },
+
+    'boolean conversion 5': {
+        expression: 'Boolean("hello there")',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'boolean conversion 6': {
+        expression: 'Boolean("")',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: false,
+    },
+
+    'chain conversion 1': {
+        expression: 'Boolean(Number(String(0)))',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: false,
+    },
+
+    'chain conversion 2': {
+        expression: 'Boolean(Number(String(1)))',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'round 1': {
+        expression: 'round("asd")',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'round 2': {
+        expression: 'round("13")',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'round 3': {
+        expression: 'round(13)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'round 4': {
+        expression: 'round(13) == round(13.1222)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'round 5': {
+        expression: 'round(13) != round(13.9922)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'round 6': {
+        expression: 'round(13) == floor(13.9922)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'floor 1': {
+        expression: 'floor(13E8)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'floor 2': {
+        expression: 'floor(1359 / 342)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'upper 1': {
+        expression: 'upper("alon") == "ALON"',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'upper 2': {
+        expression: 'upper("asd") != "ALON"',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'upper 3': {
+        expression: 'upper("asd") != 333',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'lower 1': {
+        expression: 'lower("DIAMANT") == "diamant"',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'lower 2': {
+        expression: 'lower("asd") != "ALON"',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'lower 3': {
+        expression: 'lower("ASD") == "asd"',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'trim 1': {
+        expression: 'trim("   ASD   ") == "ASD"',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'trim 2': {
+        expression: 'trim(lower("   ASD   ")) == "asd"',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'trim 3': {
+        expression: 'lower(trim("   ASD   ")) == "asd"',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'trim left': {
+        expression: 'trimLeft("   ASD   ") == "ASD   "',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'trim right': {
+        expression: 'trimRight("   ASD   ") == "   ASD"',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'replace1': {
+        expression: 'replace("test me and you", "me", "her") == "test her and you"',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'replace2 - CASE SENSITIVE': {
+        expression: 'replace("test ME and you", "me", "her") == "test ME and you"',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'replace3': {
+        expression: 'replace("test ME and you", 123, "her") == "test ME and you"',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'replace4': {
+        expression: 'replace("test ME and you", 123) == "test ME and you"',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'replace5': {
+        expression: 'replace("test ME and you", 123, 234, "her") == "test ME and you"',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'substring1': {
+        expression: 'substring("test ME and you", 0, 4) == "test"',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'substring2': {
+        expression: 'substring("test ME and you", 4, 8) == " ME "',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'substring3': {
+        expression: 'substring("test ME and you", 4, null) == " ME and you"',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'substring4': {
+        expression: 'substring("test ME and you", 4, -1) == " ME and you"',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'length 1': {
+        expression: 'length("hello") == 5',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'length 2': {
+        expression: 'length(12345) == 5',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'string includes 1': {
+        expression: 'includes("team", "i")',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: false,
+    },
+
+    'string includes 2': {
+        expression: 'includes("team", "ea")',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'string includes 3': {
+        expression: 'includes("team", 456)',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'string indexOf 1': {
+        expression: 'indexOf("team", "i") == -1',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'string indexOf 2': {
+        expression: 'indexOf("team", "ea") == 1',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'string indexOf 3': {
+        expression: 'indexOf("team", 456)',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'string indexOf 4': {
+        expression: 'indexOf(234234, "234")',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'string indexOf 5': {
+        expression: 'indexOf(String(999234234.23423), "234")',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'regexp match 1': {
+        expression: 'match("hello there you", "..ll.", true)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'regexp match 2': {
+        expression: 'match("hello there you", "..LL.", true)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: false,
+    },
+
+    'regexp match 3': {
+        expression: 'match("hello there you", "hell$", true)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: false,
+    },
+
+    'regexp match 4': {
+        expression: 'match("hello there you", "^hell", true)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'regexp match 5': {
+        expression: 'match("hello there you", "bye", false)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: false,
+    },
+
+    'regexp match 6': {
+        expression: 'match("hello there you", 123, false)',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'regexp match 7': {
+        expression: 'match(457457, 123, false)',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'regexp match 8': {
+        expression: 'match("hello there you", "^hell", null)',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'regexp match 9': {
+        expression: 'match(123, false)',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'regexp match 10': {
+        expression: 'match()',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'one for fun': {
+        expression: 'match(' +
+                    '   lower(String(round(99.234234)) + " is the number to call") + " in case of emergencies", ' +
+                    '   "100", ' +
+                    '   true' +
+                    ') ' +
+                    '== ' +
+                    '(' +
+                    '   99 * 2000 > 99 * 999 && ' +
+                    '   trueBooleanValue && ' +
+                    '   somePositiveNumericValue < someNegativeNumericValue' +
+                    ') ',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
 };
 
 describe(
@@ -809,12 +1364,12 @@ describe(
                     const expectedResult   = testCase.expectedResult;
 
                     const actualValidity =
-                              expression_evaluator.validateSingleExpression(
+                              expressionEvaluator.validateSingleExpression(
                                   testCase.expression,
                                   testCase.variableObjects
                               ).length === 0;
                     const actualResult   =
-                              expression_evaluator.evaluateSingleExpression(
+                              expressionEvaluator.evaluateSingleExpression(
                                   testCase.expression,
                                   testCase.variableObjects
                               );

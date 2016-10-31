@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 
 const jsep = require('jsep');
-const _ = require('lodash');
+const _    = require('lodash');
 // import parse from 'jsep';
 
 //------------------------------------------------------------------------------
@@ -18,7 +18,6 @@ const _ = require('lodash');
 // Private methods/data
 
 // This is the full set of types that any JSEP node can be.
-// Store them here to save space when minified
 const COMPOUND        = 'Compound';
 const IDENTIFIER      = 'Identifier';
 const MEMBER_EXP      = 'MemberExpression';
@@ -38,7 +37,7 @@ const BINARY_OPERATOR_ALLOWED_TYPES = {
     '>': ['number', 'string'],
     '<=': ['number', 'string'],
     '>=': ['number', 'string'],
-    '+': ['number'],
+    '+': ['number', 'string'],
     '-': ['number'],
     '*': ['number'],
     '/': ['number'],
@@ -51,9 +50,162 @@ const UNARY_OPERATOR_ALLOWED_TYPES = {
     '+': ['number'],
     '-': ['number'],
     '!': ['number', 'boolean'],
+};
+
+const FUNCTION_DEFINITIONS = {
+
+    // Type casting
+
+    'String': {
+        'params': [
+            ['number', 'string'],
+        ],
+        'function': String,
+
+    },
+    'Number': {
+        'params': [
+            ['number', 'string'],
+        ],
+        'function': (value) => {
+            const result = Number(value);
+
+            if (Number.isNaN(result) || !Number.isFinite(result)) {
+                throw new Error(`Error converting value '${value}' to number`);
+            }
+
+            return result;
+        },
+
+    },
+    'Boolean': {
+        'params': [
+            ['number', 'string'],
+        ],
+        'function': Boolean,
+
+    },
+
+    // Numeric functions
+
+    'round': {
+        'params': [
+            ['number'],
+        ],
+        'function': (num) => { return Math.round(num); },
+
+    },
+    'floor': {
+        'params': [
+            ['number'],
+        ],
+        'function': (num) => { return Math.floor(num); },
+    },
+
+    // String modification
+
+    'upper': {
+        'params': [
+            ['string'],
+        ],
+        'function': (str) => { return str.toUpperCase(); },
+
+    },
+    'lower': {
+        'params': [
+            ['string'],
+        ],
+        'function': (str) => { return str.toLowerCase(); },
+
+    },
+    'trim': {
+        'params': [
+            ['string'],
+        ],
+        'function': (str) => { return str.trim(); },
+
+    },
+    'trimRight': {
+        'params': [
+            ['string'],
+        ],
+        'function': (str) => { return str.trimRight(); },
+
+    },
+    'trimLeft': {
+        'params': [
+            ['string'],
+        ],
+        'function': (str) => { return str.trimLeft(); },
+
+    },
+    'replace': {
+        'params': [
+            ['string'],  // main string
+            ['string'],  // string to find
+            ['string'],  // replacement string
+        ],
+        'function': (str, searchString, replacementString) => {
+            return str.replace(searchString, replacementString);
+        },
+    },
+    'substring': {
+        'params': [
+            ['string'],  // main string
+            ['number'],  // index to start
+            ['number'],  // index to end
+        ],
+        'function': (str, startIndex, endIndex) => {
+            // In case we get an index that doesn't make sense - just ignore it
+            if (endIndex < startIndex) {
+                endIndex = undefined;
+            }
+            return str.substring(startIndex, endIndex);
+        },
+    },
+    'length': {
+        'params': [
+            ['string'],
+        ],
+        'function': (str) => { return str.length; },
+
+    },
+
+    // String searching and matching
+
+    'includes': {
+        'params': [
+            ['string'], // main string
+            ['string'], // string to search for
+        ],
+        'function': (str, searchString) => { return str.includes(searchString); },
+
+    },
+    'indexOf': {
+        'params': [
+            ['string'], // main string
+            ['string'], // string to search for
+        ],
+        'function': (str, searchString) => { return str.indexOf(searchString); },
+
+    },
+    'match': {
+        'params': [
+            ['string'],  // main string
+            ['string'],  // regular expression
+            ['boolean'],  // options ("i")
+        ],
+        'function': (str, regexp, caseInsensitive) => {
+            return !!str.match(regexp, caseInsensitive ? 'i' : '');
+        },
+    },
 
 };
 
+// Forward declaration
+let _handleExpressionNode;
+
+// Verify that one or more expressions are of a type that is legal for the operator
 function _verifyExpressionsType(operatorType, expressions) {
 
     let allowedTypes;
@@ -81,7 +233,6 @@ function _handleLiteralValueNode(node) {
 }
 
 function _handleUnaryExpressionNode(node, variables) {
-    // TODO: Verify types here
     const expression = _handleExpressionNode(node.argument, variables);
 
     switch (node.operator) {
@@ -100,9 +251,9 @@ function _handleUnaryExpressionNode(node, variables) {
 }
 
 function _handleLogicalExpressionNode(node, variables) {
-    const leftExpression = _handleExpressionNode(node.left, variables);
+    const leftExpression  = _handleExpressionNode(node.left, variables);
     const rightExpression = _handleExpressionNode(node.right, variables);
-    const expressions = [leftExpression, rightExpression];
+    const expressions     = [leftExpression, rightExpression];
 
     switch (node.operator) {
         case '||':
@@ -118,9 +269,9 @@ function _handleLogicalExpressionNode(node, variables) {
 
 function _handleBinaryExpressionNode(node, variables) {
 
-    const leftExpression = _handleExpressionNode(node.left, variables);
+    const leftExpression  = _handleExpressionNode(node.left, variables);
     const rightExpression = _handleExpressionNode(node.right, variables);
-    const expressions = [leftExpression, rightExpression];
+    const expressions     = [leftExpression, rightExpression];
     let evaluatedResult;
 
     switch (node.operator) {
@@ -162,14 +313,14 @@ function _handleBinaryExpressionNode(node, variables) {
 
             evaluatedResult = leftExpression / rightExpression;
             if (evaluatedResult === Infinity) {
-                throw new Error('Division by 0');
+                throw new Error('Division of ${leftExpression} by 0');
             }
             return evaluatedResult;
         case '%':
             _verifyExpressionsType(node.operator, expressions);
             evaluatedResult = leftExpression % rightExpression;
             if (Number.isNaN(evaluatedResult)) {
-                throw new Error('Modulo by 0');
+                throw new Error('Modulo of ${leftExpression} by 0');
             }
             return evaluatedResult;
 
@@ -178,6 +329,8 @@ function _handleBinaryExpressionNode(node, variables) {
     }
 }
 
+// Handle an identifier node - an identifier is a variable name. It is always just one variable,
+// never deeper.
 function _handleIdentifierNode(node, variables) {
     const evaluatedResult = _.get(variables, node.name, undefined);
 
@@ -188,6 +341,8 @@ function _handleIdentifierNode(node, variables) {
     }
 }
 
+// Handle a member node - a member node is a member of a variable. This is always a variable and
+// its members, not deeper nor is it flat (otherwise it'd be an identifier)
 function _handleMemberNode(node, variables) {
     const containingVariable = _handleExpressionNode(node.object, variables);
 
@@ -206,7 +361,9 @@ function _handleMemberNode(node, variables) {
     }
 }
 
-function _handleCompoundNode(node, variables) {
+// Handle a compound node - which can be an empty node (legit) or a node with several expressions
+// separated by spaces (not legit)
+function _handleCompoundNode(node /* , variables*/) {
     if (node.body.length === 0) {
         // Empty expression
         return false;
@@ -215,11 +372,54 @@ function _handleCompoundNode(node, variables) {
     }
 }
 
+// Handle a function call node - based on the function definitions above.
 function _handleFunctionCallExpressionNode(node, variables) {
 
+    if (node.callee.type !== IDENTIFIER) {
+        throw new Error(`Invalid function name type: '${node.callee.type}'`);
+    }
+
+    const functionName       = node.callee.name;
+    const functionDefinition = _.get(FUNCTION_DEFINITIONS, functionName, undefined);
+
+    if (functionDefinition === undefined) {
+        throw new Error(`Unknown function: '${functionName}'`);
+    }
+
+    // Verify the validity of the arguments
+    const args =
+              node.arguments.map(
+                  (arg) => { return _handleExpressionNode(arg, variables); }
+              );
+
+    if (args.length !== functionDefinition.params.length) {
+        throw new Error(`Expected ${functionDefinition.params.length} arguments for function '${functionName}'.`);
+    }
+
+    // Valid arguments?
+    for (let currentArgIndex = 0;
+         currentArgIndex < args.length;
+         currentArgIndex += 1) {
+
+        const currentArgType   = args[currentArgIndex] == null ? 'null' : typeof args[currentArgIndex];
+        const expectedArgTypes = functionDefinition.params[currentArgIndex];
+
+        // TODO: ES6 this mofo
+        if (_.includes(expectedArgTypes, currentArgType) === false) {
+            throw new Error(`Invalid ${currentArgType} argument #${currentArgIndex
+                } for function '${functionName}': expected ${expectedArgTypes}`);
+        }
+
+    }
+
+    // Got here? all is well! Call the function.
+    const evaluatedResult = functionDefinition.function(...args);
+
+    return evaluatedResult;
 }
 
-function _handleExpressionNode(node, variables) {
+// Handle an expression node, based on its type.
+_handleExpressionNode = function (node, variables) {
 
     let evaluatedValue = false;
 
@@ -245,11 +445,11 @@ function _handleExpressionNode(node, variables) {
             break;
 
         case THIS_EXP:
-            console.log('THIS_EXP detected.');
-            break;
+            // console.log('THIS_EXP detected.');
+            throw new Error(`this keyword not supported.`);
 
         case CALL_EXP:
-            console.log('CALL_EXP detected.');
+            // console.log('CALL_EXP detected.');
             evaluatedValue = _handleFunctionCallExpressionNode(node, variables);
             break;
 
@@ -269,22 +469,21 @@ function _handleExpressionNode(node, variables) {
             break;
 
         case CONDITIONAL_EXP:
-            console.log('CONDITIONAL_EXP detected.');
-            break;
+            // console.log('CONDITIONAL_EXP detected.');
+            throw new Error(`Trinary operator (?:) currently not supported.`);
 
         case ARRAY_EXP:
-            console.log('ARRAY_EXP detected.');
-            break;
+            // console.log('ARRAY_EXP detected.');
+            throw new Error(`Array literals ([1, 2, 3]) currently not supported.`);
 
         default:
-            console.log('default detected.');
-            evaluatedValue = false;
-            break;
+            throw new Error(`Unknown expression detected! Very strange.`);
     }
 
     return evaluatedValue;
-}
+};
 
+// Evaluate an expression node - converting its value to a boolean
 function _evaluateExpressionNode(node, variables) {
 
     const evaluatedResult = _handleExpressionNode(node, variables);
@@ -300,6 +499,7 @@ function _evaluateExpressionNode(node, variables) {
     return !!evaluatedResult;
 }
 
+// Validate and evaluate an expression
 function _validateAndEvaluateExpression(expression, variables) {
     const trimmedExpression = (String(expression)).trim();
 
