@@ -59,66 +59,80 @@ const exampleVariables = {
         'success': true,
     },
     'emptyObjectValue': {},
+
+    'author': {
+        'name': 'Alon Diamant',
+        'homepage': 'http://www.alondiamant.com',
+        'github': {
+            'repositories': 12,
+            'url': 'http://www.github.com/advance512',
+        },
+    },
+    'company': {
+        'name': 'Codefresh',
+        'homepage': 'http://www.codefresh.io',
+        'phoneNumber': '+972-99-999-9999',
+    },
 };
 
 const expressionsAndExpectedResults = {
     'empty': {
         expression: '',
-        variableObjects: {},
+        variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: false,
     },
     'null': {
         expression: 'null',
-        variableObjects: {},
+        variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: false,
     },
     'false': {
         expression: 'false',
-        variableObjects: {},
+        variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: false,
     },
     'positive number': {
         expression: '1234',
-        variableObjects: {},
+        variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
     },
     'negative number': {
         expression: '-1234',
-        variableObjects: {},
+        variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
     },
     'zero number': {
         expression: '0000000',
-        variableObjects: {},
+        variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: false,
     },
     'empty string': {
         expression: '""',
-        variableObjects: {},
+        variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: false,
     },
     'string1': {
         expression: '"asdasd"',
-        variableObjects: {},
+        variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
     },
     'string2': {
         expression: '\'asdasd\'',
-        variableObjects: {},
+        variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
     },
     'string3': {
         expression: '`asdasd`',
-        variableObjects: {},
+        variableObjects: exampleVariables,
         expectedValidity: false,
         expectedResult: false,
     },
@@ -184,6 +198,13 @@ const expressionsAndExpectedResults = {
         expression: 'nullBooleanValue',
         variableObjects: exampleVariables,
         expectedValidity: true,
+        expectedResult: false,
+    },
+
+    'invalidIdentifer': {
+        expression: 'invalidIdentifer',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
         expectedResult: false,
     },
 
@@ -412,6 +433,13 @@ const expressionsAndExpectedResults = {
     },
 
     'typical object value 5': {
+        expression: 'typicalObjectValue.nonExistant',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'typical object value 6': {
         expression: 'typicalObjectValue',
         variableObjects: exampleVariables,
         expectedValidity: false,
@@ -547,7 +575,7 @@ const expressionsAndExpectedResults = {
         expectedResult: false,
     },
     'weird comparison 8': {
-        expression: 'someString > null',
+        expression: 'someStringValue > null',
         variableObjects: exampleVariables,
         expectedValidity: false,
         expectedResult: false,
@@ -559,13 +587,13 @@ const expressionsAndExpectedResults = {
         expectedResult: false,
     },
     'weird comparison 10': {
-        expression: 'typicalObjectValue.branch_dir > 82',
+        expression: 'typicalObjectValue.working_dir > 82',
         variableObjects: exampleVariables,
         expectedValidity: false,
         expectedResult: false,
     },
     'weird comparison 11': {
-        expression: 'typicalObjectValue.branch_dir > complexObjectValue.internalObjectValue.someNumericValue',
+        expression: 'typicalObjectValue.working_dir > complexObjectValue.internalObjectValue.someNumericValue',
         variableObjects: exampleVariables,
         expectedValidity: false,
         expectedResult: false,
@@ -681,10 +709,37 @@ const expressionsAndExpectedResults = {
         expectedResult: false,
     },
 
+    '+234': {
+        expression: '+234',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    '~234': {
+        expression: '~234',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
     'number+true': {
         expression: '555+true',
         variableObjects: exampleVariables,
         expectedValidity: false,
+        expectedResult: false,
+    },
+
+    '23423-223': {
+        expression: '23423-223',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+    '123-123': {
+        expression: '123-123',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
         expectedResult: false,
     },
 
@@ -735,6 +790,13 @@ const expressionsAndExpectedResults = {
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: false,
+    },
+
+    '55 % 10': {
+        expression: '55 % 10 == 5',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
     },
 
     'numeric overflow': {
@@ -814,6 +876,27 @@ const expressionsAndExpectedResults = {
         expectedResult: false,
     },
 
+    'this': {
+        expression: 'this',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'trinary operator': {
+        expression: '5 > 2 ? 4 : 1',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'array': {
+        expression: '[1, 2, 3]',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
     // ------------------
 
     'function 1': {
@@ -872,6 +955,19 @@ const expressionsAndExpectedResults = {
         expectedResult: false,
     },
 
+    'bad function call 6': {
+        expression: 'hello(false)',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'bad function call 7': {
+        expression: '123(false)',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
 
     // ------------------
 
@@ -1261,14 +1357,14 @@ const expressionsAndExpectedResults = {
     },
 
     'regexp match 1': {
-        expression: 'match("hello there you", "..ll.", true)',
+        expression: 'match("hello there you", "..ll.", false)',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
     },
 
     'regexp match 2': {
-        expression: 'match("hello there you", "..LL.", true)',
+        expression: 'match("hello there you", "..LL.", false)',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: false,
@@ -1345,6 +1441,16 @@ const expressionsAndExpectedResults = {
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
+    },
+
+    'doc example': {
+        expression: 'match(author.name, "alon", true) && ' +
+                    'author.github.repositories > 10 && ' +
+                    'Number(substring(company.phoneNumber, 1, 4)) / 2 == 486',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+
     },
 
 };

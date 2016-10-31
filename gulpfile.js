@@ -43,7 +43,7 @@ gulp.task(
                 'finish', () => {
                     unitTests()
                         .pipe(plugins.istanbul.writeReports())
-                        .pipe(plugins.istanbul.enforceThresholds({ thresholds: { global: 100 } }))
+                        .pipe(plugins.istanbul.enforceThresholds({ thresholds: { global: 90 } }))
                         .on('end', done);
                 }
             );

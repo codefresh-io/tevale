@@ -193,10 +193,10 @@ const FUNCTION_DEFINITIONS = {
         'params': [
             ['string'],  // main string
             ['string'],  // regular expression
-            ['boolean'],  // options ("i")
+            ['boolean'],  // ignore the case?
         ],
-        'function': (str, regexp, caseInsensitive) => {
-            return !!str.match(regexp, caseInsensitive ? 'i' : '');
+        'function': (str, regexp, ignoreCase) => {
+            return !!str.match(new RegExp(regexp, ignoreCase ? 'i' : ''));
         },
     },
 
@@ -214,7 +214,8 @@ function _verifyExpressionsType(operatorType, expressions) {
     } else if (expressions.length === 2) {
         allowedTypes = BINARY_OPERATOR_ALLOWED_TYPES[operatorType];
     } else {
-        throw new Error(`_verifyExpressionsType called with invalid number ${expressions.length}of expressions.`);
+        // Internal programmer error.
+        throw new Error(`_verifyExpressionsType called with invalid number ${expressions.length} of expressions.`);
     }
 
     for (const currentType of allowedTypes) {
@@ -225,7 +226,10 @@ function _verifyExpressionsType(operatorType, expressions) {
         }
     }
 
-    throw new Error(`The operator ${operatorType} cannot be used with ${expressions}. It can only be used with the types: ${allowedTypes}`);
+    const expressionTypes =
+        expressions.map((expression) => { return expression == null ? 'null' : typeof expression; });
+
+    throw new Error(`The operator ${operatorType} cannot be used with ${expressionTypes}. It can only be used with the types: ${allowedTypes}`);
 }
 
 function _handleLiteralValueNode(node) {
@@ -313,14 +317,14 @@ function _handleBinaryExpressionNode(node, variables) {
 
             evaluatedResult = leftExpression / rightExpression;
             if (evaluatedResult === Infinity) {
-                throw new Error('Division of ${leftExpression} by 0');
+                throw new Error(`Division of ${leftExpression} by 0`);
             }
             return evaluatedResult;
         case '%':
             _verifyExpressionsType(node.operator, expressions);
             evaluatedResult = leftExpression % rightExpression;
             if (Number.isNaN(evaluatedResult)) {
-                throw new Error('Modulo of ${leftExpression} by 0');
+                throw new Error(`Modulo of ${leftExpression} by 0`);
             }
             return evaluatedResult;
 
@@ -368,7 +372,7 @@ function _handleCompoundNode(node /* , variables*/) {
         // Empty expression
         return false;
     } else {
-        throw new Error(`Cannot handle compound expressions.'`);
+        throw new Error(`Cannot handle compound expressions.`);
     }
 }
 
@@ -406,8 +410,9 @@ function _handleFunctionCallExpressionNode(node, variables) {
 
         // TODO: ES6 this mofo
         if (_.includes(expectedArgTypes, currentArgType) === false) {
-            throw new Error(`Invalid ${currentArgType} argument #${currentArgIndex
-                } for function '${functionName}': expected ${expectedArgTypes}`);
+            throw new Error(`Invalid argument #${currentArgIndex
+                } of type ${currentArgType} for function '${functionName
+                }': expected ${expectedArgTypes}`);
         }
 
     }
@@ -446,7 +451,7 @@ _handleExpressionNode = function (node, variables) {
 
         case THIS_EXP:
             // console.log('THIS_EXP detected.');
-            throw new Error(`this keyword not supported.`);
+            throw new Error(`keyword 'this' not supported.`);
 
         case CALL_EXP:
             // console.log('CALL_EXP detected.');
@@ -512,7 +517,7 @@ function _validateAndEvaluateExpression(expression, variables) {
 
         return { evaluatedResult, errorMessage: null };
     } catch (err) {
-        console.log(err.stack);
+        // console.log(err.stack);
         return { evaluatedResult: null, errorMessage: err.message };
     }
 }
@@ -545,8 +550,8 @@ function evaluateSingleExpression(expression, variables) {
     if (validateAndEvaluateResult.errorMessage === null) {
         return validateAndEvaluateResult.evaluatedResult;
     } else {
-        console.log(`Invalid expression '${expression}' due to:\n    ${
-            validateAndEvaluateResult.errorMessage}`);
+        // console.log(`Invalid expression '${expression}' due to:\n    ${
+        //     validateAndEvaluateResult.errorMessage}`);
         return false;
     }
 }
