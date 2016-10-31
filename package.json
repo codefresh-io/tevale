@@ -29,6 +29,7 @@
     "sinon-chai": "^2.8.0"
   },
   "dependencies": {
-    "jsep": "^0.3.0"
+    "jsep": "^0.3.0",
+    "lodash": "^3.6.0"
   }
 }

@@ -1,21 +1,36 @@
 "use strict";
 
+// TODO: Use setup.js...
+const chai = require('chai');
+const expect = chai.expect;
+const sinon = require('sinon');
+const sinonChai = require('sinon-chai');
+
+chai.use(sinonChai);
+
 const expression_evaluator = require("../../src/expression_evaluator");
 
+// import { evaluateSingleExpression, validateSingleExpression } from "../../src/expression_evaluator";
+// const expression_evaluator = {
+//     evaluateSingleExpression,
+//     validateSingleExpression
+// };
+
+
 const exampleVariables = {
-    'somePositiveNumericVariable': 123,
-    'someZeroVariable': 0,
-    'someNegativeNumericVariable': -50,
-    'stringVariable': 'hello',
-    'emptyStringVariable': '',
-    'longStringValue': 'MA26EKMPupgvp6XYlGAVJZKv6yvaD3aobXMyExvyMBa2Hi9LlJXTUaBveMR9ErHtSfXNHHW5xAKbz2DVfBOqQ8CaSMNMQRBrJRpEpsO7FygKZmKpKHvvtPviOTfyUE0HGhnSPYHb9Hbz1CMxab4T0iQxPLCwrg57Qi0sTW1sJhVSygD9ivCfhJwJmD9PNb8bV0rJJ9aWp84LeaC7PDkj5hAozkrrJVA5hozLSXGZb0A4JLKiPOe9ITvxcIqvPNaMPA2SF4AQasE01TeGyuHQICuAMTGFFAP9y0HJBm7N0XmU',
+    'somePositiveNumericValue': 123,
+    'someZeroValue': 0,
+    'someNegativeNumericValue': -50,
+    'stringValue': 'hello',
+    'emptyStringValue': '',
+    'longStringValue': 'mA26EKMPupgvp6XYlGAVJZKv6yvaD3aobXMyExvyMBa2Hi9LlJXTUaBveMR9ErHtSfXNHHW5xAKbz2DVfBOqQ8CaSMNMQRBrJRpEpsO7FygKZmKpKHvvtPviOTfyUE0HGhnSPYHb9Hbz1CMxab4T0iQxPLCwrg57Qi0sTW1sJhVSygD9ivCfhJwJmD9PNb8bV0rJJ9aWp84LeaC7PDkj5hAozkrrJVA5hozLSXGZb0A4JLKiPOe9ITvxcIqvPNaMPA2SF4AQasE01TeGyuHQICuAMTGFFAP9y0HJBm7N0XmU',
     'trueBooleanValue': true,
     'falseBooleanValue': false,
     'nullBooleanValue': null,
     'simpleObjectValue': {
         'someNumericValue': 123,
         'someStringValue': 'hello there',
-        'someNullValue': 'hi there',
+        'someNullValue': null,
         'someBooleanValue': false,
     },
     'complexObjectValue': {
@@ -102,44 +117,44 @@ const expressionsAndExpectedResults = {
     'string3': {
         expression: '`asdasd`',
         variableObjects: {},
-        expectedValidity: true,
-        expectedResult: true,
+        expectedValidity: false,
+        expectedResult: false,
     },
 
     // ------------------
     'numeric variable value': {
-        expression: 'somePositiveNumericVariable',
+        expression: 'somePositiveNumericValue',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
     },
     'zero variable value': {
-        expression: 'someZeroVariable',
+        expression: 'someZeroValue',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: false,
     },
     'negative variable value': {
-        expression: 'someNegativeNumericVariable',
+        expression: 'someNegativeNumericValue',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
     },
     // ------------------
     'string variable value': {
-        expression: 'stringVariable',
+        expression: 'stringValue',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
     },
     'empty string variable value': {
-        expression: 'emptyStringVariable',
+        expression: 'emptyStringValue',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: false,
     },
     'long string variable value': {
-        expression: 'longStringVariable',
+        expression: 'longStringValue',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
@@ -173,58 +188,87 @@ const expressionsAndExpectedResults = {
     // ------------------
 
     'numeric comparison 1': {
-        expression: 'somePositiveNumericVariable > someZeroVariable',
+        expression: 'somePositiveNumericValue > someZeroValue',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'numeric comparison 2': {
+        expression: 'somePositiveNumericValue < someZeroValue',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: false,
     },
 
-    'numeric comparison 2': {
-        expression: 'somePositiveNumericVariable > someZeroVariable',
+    'numeric comparison 3': {
+        expression: 'somePositiveNumericValue >= someZeroValue',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'numeric comparison 4': {
+        expression: 'somePositiveNumericValue <= someZeroValue',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: false,
     },
+
+    'numeric comparison 5': {
+        expression: 'somePositiveNumericValue >= somePositiveNumericValue',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'numeric comparison 6': {
+        expression: 'somePositiveNumericValue <= somePositiveNumericValue',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
 
     // ------------------
 
     'string comparison 1': {
-        expression: 'longStringVariable > emptyStringVariable',
+        expression: 'longStringValue > emptyStringValue',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
     },
 
     'string comparison 2': {
-        expression: 'longStringVariable < emptyStringVariable',
+        expression: 'longStringValue < emptyStringValue',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: false,
     },
 
     'string comparison 3': {
-        expression: 'longStringVariable == longStringVariable',
+        expression: 'longStringValue == longStringValue',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
     },
 
     'string comparison 4': {
-        expression: 'longStringVariable === longStringVariable',
+        expression: 'longStringValue === longStringValue',
         variableObjects: exampleVariables,
         expectedValidity: false,
         expectedResult: false,
     },
 
     'string comparison 5': {
-        expression: 'longStringVariable > stringVariable',
+        expression: 'longStringValue > stringValue',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
     },
 
     'string comparison 6': {
-        expression: 'longStringVariable < stringVariable',
+        expression: 'longStringValue < stringValue',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: false,
@@ -338,7 +382,7 @@ const expressionsAndExpectedResults = {
     },
 
     'typical object value 1': {
-        expression: 'typicalObjectValue.branch_name == "develop"',
+        expression: 'typicalObjectValue.branch_name == "master"',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
@@ -348,11 +392,11 @@ const expressionsAndExpectedResults = {
         expression: 'typicalObjectValue.working_dir == "/var/tmp"',
         variableObjects: exampleVariables,
         expectedValidity: true,
-        expectedResult: true,
+        expectedResult: false,
     },
 
     'typical object value 3': {
-        expression: 'typicalObjectValue.success',
+        expression: '!!typicalObjectValue.success',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
@@ -459,25 +503,25 @@ const expressionsAndExpectedResults = {
     // ------------------
 
     'weird comparison 1': {
-        expression: 'somePositiveNumericVariable > null',
+        expression: 'somePositiveNumericValue > null',
         variableObjects: exampleVariables,
         expectedValidity: false,
         expectedResult: false,
     },
     'weird comparison 2': {
-        expression: 'somePositiveNumericVariable < stringVariable',
+        expression: 'somePositiveNumericValue < stringValue',
         variableObjects: exampleVariables,
         expectedValidity: false,
         expectedResult: false,
     },
     'weird comparison 3': {
-        expression: 'somePositiveNumericVariable > true',
+        expression: 'somePositiveNumericValue > true',
         variableObjects: exampleVariables,
         expectedValidity: false,
         expectedResult: false,
     },
     'weird comparison 4': {
-        expression: 'somePositiveNumericVariable > simpleObjectValue',
+        expression: 'somePositiveNumericValue > simpleObjectValue',
         variableObjects: exampleVariables,
         expectedValidity: false,
         expectedResult: false,
@@ -527,41 +571,256 @@ const expressionsAndExpectedResults = {
 
     // ------------------
 
+
+    'parentheses 1': {
+        expression: '(somePositiveNumericValue > someZeroValue)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'parentheses 2': {
+        expression: '(somePositiveNumericValue >= someZeroValue) && true',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'parentheses 3': {
+        expression: '(longStringValue > emptyStringValue) && (longStringValue >= emptyStringValue)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'parentheses 4': {
+        expression: '((longStringValue > emptyStringValue) && (longStringValue >= emptyStringValue))',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'parentheses 5': {
+        expression: '(longStringValue > emptyStringValue && (longStringValue >= emptyStringValue))',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'parentheses 6': {
+        expression: '60 > 35 && (50 > 22 && ((90 > 33) && ((26 > 10) && 15 > 30)) || (80 > 32))',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'parentheses 7': {
+        expression: '60 > 35 && (50 > 22 && ((90 > 33) && ((26 > 10) && 15 > 30)) || (80 < 32))',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: false,
+    },
+
+    'parentheses 8': {
+        expression: '60 > 35 && (50 > 22 && ((90 > 33) && ((26 > 10) && 15 > 30)) || (somePositiveNumericValue > 32))',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'parentheses 9': {
+        expression: '60 > 35 && (50 > 22 && ((90 > 33) && ((26 > 10) && 15 > 30)) || (somePositiveNumericValue < 32))',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: false,
+    },
+
+    // ------------------
+
+    'division by 0': {
+        expression: 'somePositiveNumericValue / someZeroValue',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'modulo by 0': {
+        expression: 'somePositiveNumericValue % someZeroValue',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'division': {
+        expression: 'somePositiveNumericValue / somePositiveNumericValue',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'really big number': {
+        expression: '9007199254740991 * 9007199254740991',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'fractions': {
+        expression: '1.231 * 5.2342',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    '+true': {
+        expression: '+true',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'number+true': {
+        expression: '555+true',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    '!true': {
+        expression: '!true',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: false,
+    },
+
+    '!!true': {
+        expression: '!!true',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    '!!!!!!!!!!true': {
+        expression: '!!!!!!!!!!true',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    '!33': {
+        expression: '!33',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: false,
+    },
+
+    '!!33': {
+        expression: '!!33',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    '!0': {
+        expression: '!0',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    '!!0': {
+        expression: '!!0',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: false,
+    },
+
+    'numeric overflow': {
+        expression: '1.79E+308 * 1.79E+308',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'string division 1': {
+        expression: 'stringValue / 5',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'string division 2': {
+        expression: 'stringValue / stringValue',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'string adding 1': {
+        expression: 'stringValue + 5',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'string adding 2': {
+        expression: 'stringValue + 5',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    // ------------------
+
+    'function 1': {
+        expression: 'stringValue.toUpperCase()',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'function 2': {
+        expression: 'stringValue.substr(2, 4)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'function 3': {
+        expression: 'stringValue.substr(20, 40)',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
 };
 
 describe(
     'Verify expressions: ', () => {
 
         // TODO: Ugh, why can't I just do expressionsAndExpectedResults.keys()???
-        for (let testCaseName of Object.keys(expressionsAndExpectedResults)) {
+        for (const testCaseName of Object.keys(expressionsAndExpectedResults)) {
 
-            console.log(testCaseName);
             const testCase = expressionsAndExpectedResults[testCaseName];
 
             it(
-                `expression:  '${testCase.expression}'`, () => {
+                `case '${testCaseName}'`, () => {
 
-                    try {
-                        const expectedValidity = testCase.expectedValidity;
-                        const expectedResult   = testCase.expectedResult;
+                    const expectedValidity = testCase.expectedValidity;
+                    const expectedResult   = testCase.expectedResult;
 
-                        const actualValidity =
-                                  expression_evaluator.validateSingleExpression(
-                                      testCase.expression,
-                                      testCase.expression
-                                  ) === [];
-                        const actualResult   =
-                                  expression_evaluator.evaluateSingleExpression(
-                                      testCase.expression,
-                                      testCase.expression
-                                  );
+                    const actualValidity =
+                              expression_evaluator.validateSingleExpression(
+                                  testCase.expression,
+                                  testCase.variableObjects
+                              ).length === 0;
+                    const actualResult   =
+                              expression_evaluator.evaluateSingleExpression(
+                                  testCase.expression,
+                                  testCase.variableObjects
+                              );
 
-                        expect(actualValidity).to.equal(expectedValidity);
-                        expect(actualResult).to.equal(expectedResult);
-
-                    } catch (err) {
-                        console.log(`Error in case ${testCaseName}\n${err.stack}`);
-                    }
+                    expect(actualValidity).to.equal(expectedValidity);
+                    expect(actualResult).to.equal(expectedResult);
                 }
             );
 
