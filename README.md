@@ -1,4 +1,4 @@
-# Codefresh Expression Evaluator
+# Expression Evaluator
 
 > A parser that accepts a set of named objects (with properties) and an expression, verifies syntax and evaluates the expression.
 
@@ -12,9 +12,7 @@ Developed in [Codefresh](https://www.codefresh.io).
 * Supports string searching and regexp matching functions
 
 ### Installation
-...
-...
-...
+
 ```bash
 $ npm install cf-expression-evaluator --save
 ```
@@ -48,6 +46,15 @@ console.log(
     )
 );
 ```
+
+## Function Reference
+
+...
+...
+TODO
+...
+...
+
 
 ## Examples
 
@@ -341,6 +348,6 @@ $ npm install -d && gulp
 ## License
 
 Copyright © 2016, [Codefresh](https://codefresh.io).
-Released under the [MIT license](https://github.com/advance512/parse-bitbucket-url/blob/master/LICENSE).
+Released under the [MIT license](https://github.com/codefresh-io/cf-expression-evaluator/blob/master/LICENSE).
 
 ***
