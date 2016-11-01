@@ -322,7 +322,14 @@ The result for the following expressions is:
 |'match()'|Expected 3 arguments for function 'match'.|
 |'match(   lower(String(round(99.234234)) + " is the number to call") + " in case of emergencies",    "100",    true) == (   99 * 2000 > 99 * 999 &&    trueBooleanValue &&    somePositiveNumericValue < someNegativeNumericValue) '|true|
 |'match(author.name, "alon", true) && author.github.repositories > 10 && Number(substring(company.phoneNumber, 1, 4)) / 2 == 486'|true|
-
+|'hello there.testVariable == 567'|Cannot handle compound expressions.|
+|'hello there.badly-named-variable == 890'|Cannot handle compound expressions.|
+|'Variable("hello there").testVariable == 567'|Invalid identifier: 'hello there'|
+|'Member(Variable("hello there"), "badly-named-variable") == 890'|Invalid identifier: 'hello there'|
+|'Variable("author").name == "Alon Diamant"'|true|
+|'Member(author.github, "repositories") == 12'|true|
+|'author.toString'|Undefined identifier member: 'toString'|
+|'author.eval("")'|Invalid function name type: 'MemberExpression'|
 
 ### Available gulp tasks
 

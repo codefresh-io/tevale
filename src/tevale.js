@@ -362,7 +362,11 @@ function _handleBinaryExpressionNode(node, variables) {
 // Handle an identifier node - an identifier is a variable name. It is always just one variable,
 // never deeper.
 _handleIdentifierNode = function (node, variables) {
-    const evaluatedResult = _.get(variables, node.name, undefined);
+    let evaluatedResult;
+
+    if (variables.hasOwnProperty(node.name)) { // eslint-disable-line
+        evaluatedResult = _.get(variables, node.name, undefined);
+    }
 
     if (evaluatedResult === undefined) {
         throw new Error(`Invalid identifier: '${node.name}'`);
@@ -382,7 +386,12 @@ function _handleMemberNode(node, variables) {
 
     const keyValue = node.property.name;
 
-    const evaluatedResult = _.get(containingVariable, keyValue, undefined);
+    let evaluatedResult;
+
+    if (containingVariable.hasOwnProperty(keyValue)) { // eslint-disable-line
+        evaluatedResult = _.get(containingVariable, keyValue, undefined);
+    }
+
 
     if (evaluatedResult === undefined) {
         throw new Error(`Undefined identifier member: '${node.property.name}'`);

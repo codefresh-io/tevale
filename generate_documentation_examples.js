@@ -1,6 +1,6 @@
 'use strict';
 
-const expressionEvaluator = require('./src/expression_evaluator');
+const tevale = require('./src/tevale');
 
 const exampleVariables = {
     'somePositiveNumericValue': 123,
@@ -1436,6 +1436,70 @@ const expressionsAndExpectedResults = {
 
     },
 
+
+    'bad variable': {
+
+        expression: 'hello there.testVariable == 567',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'bad member': {
+
+        expression: 'hello there.badly-named-variable == 890',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'Variable()': {
+
+        expression: 'Variable("hello there").testVariable == 567',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'Member()': {
+
+        expression: 'Member(Variable("hello there"), "badly-named-variable") == 890',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'Variable() 2': {
+
+        expression: 'Variable("author").name == "Alon Diamant"',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'Member() 2': {
+
+        expression: 'Member(author.github, "repositories") == 12',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'Evil stuff 1': {
+
+        expression: 'author.toString',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'Evil stuff 2': {
+
+        expression: 'author.eval("")',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
 };
 
 // TODO: Ugh, why can't I just do expressionsAndExpectedResults.keys()???
@@ -1444,13 +1508,13 @@ for (const testCaseName of Object.keys(expressionsAndExpectedResults)) {
     const testCase = expressionsAndExpectedResults[testCaseName];
 
     let errorMessage =
-              expressionEvaluator.validateExpression(
+              tevale.validateExpression(
                   testCase.expression,
                   testCase.variableObjects
               );
     errorMessage = errorMessage.length > 0 ? errorMessage[0] : '';
     const actualResult   =
-              expressionEvaluator.evaluateExpression(
+              tevale.evaluateExpression(
                   testCase.expression,
                   testCase.variableObjects
               );

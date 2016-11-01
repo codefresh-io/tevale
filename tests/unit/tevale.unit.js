@@ -1506,7 +1506,22 @@ const expressionsAndExpectedResults = {
         expectedResult: true,
     },
 
+    'Evil stuff 1': {
 
+        expression: 'author.toString',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+
+    'Evil stuff 2': {
+
+        expression: 'author.eval("")',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
 };
 
 describe(
