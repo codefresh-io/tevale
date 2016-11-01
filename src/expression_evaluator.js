@@ -17,6 +17,10 @@ const _    = require('lodash');
 
 // Private methods/data
 
+// Forward declaration
+let _handleExpressionNode;
+let _handleIdentifierNode;
+
 // This is the full set of types that any JSEP node can be.
 const COMPOUND        = 'Compound';
 const IDENTIFIER      = 'Identifier';
@@ -55,6 +59,31 @@ const UNARY_OPERATOR_ALLOWED_TYPES = {
 const FUNCTION_DEFINITIONS = {
 
     // Type casting
+
+    'Variable': {
+        'params': [
+            ['string'],
+        ],
+        'function': (variableName, variables) => {
+            return _handleIdentifierNode({ name: variableName }, variables);
+        },
+    },
+
+    'Member': {
+        'params': [
+            ['object'],
+            ['string'],
+        ],
+        'function': (containingVariable, keyValue) => {
+            const evaluatedResult = _.get(containingVariable, keyValue, undefined);
+
+            if (evaluatedResult === undefined) {
+                throw new Error(`Undefined identifier member: '${keyValue}'`);
+            } else {
+                return evaluatedResult;
+            }
+        },
+    },
 
     'String': {
         'params': [
@@ -202,9 +231,6 @@ const FUNCTION_DEFINITIONS = {
 
 };
 
-// Forward declaration
-let _handleExpressionNode;
-
 // Verify that one or more expressions are of a type that is legal for the operator
 function _verifyExpressionsType(operatorType, expressions) {
 
@@ -335,7 +361,7 @@ function _handleBinaryExpressionNode(node, variables) {
 
 // Handle an identifier node - an identifier is a variable name. It is always just one variable,
 // never deeper.
-function _handleIdentifierNode(node, variables) {
+_handleIdentifierNode = function (node, variables) {
     const evaluatedResult = _.get(variables, node.name, undefined);
 
     if (evaluatedResult === undefined) {
@@ -343,7 +369,7 @@ function _handleIdentifierNode(node, variables) {
     } else {
         return evaluatedResult;
     }
-}
+};
 
 // Handle a member node - a member node is a member of a variable. This is always a variable and
 // its members, not deeper nor is it flat (otherwise it'd be an identifier)
@@ -418,7 +444,9 @@ function _handleFunctionCallExpressionNode(node, variables) {
     }
 
     // Got here? all is well! Call the function.
-    const evaluatedResult = functionDefinition.function(...args);
+
+    // Always pass in the variables so Variable aware functions can be called.
+    const evaluatedResult = functionDefinition.function(...args, variables);
 
     return evaluatedResult;
 }
@@ -517,7 +545,7 @@ function _validateAndEvaluateExpression(expression, variables) {
 
         return { evaluatedResult, errorMessage: null };
     } catch (err) {
-        // console.log(err.stack);
+        console.log(err.stack);
         return { evaluatedResult: null, errorMessage: err.message };
     }
 }

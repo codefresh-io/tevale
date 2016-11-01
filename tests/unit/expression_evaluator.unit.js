@@ -73,6 +73,11 @@ const exampleVariables = {
         'homepage': 'http://www.codefresh.io',
         'phoneNumber': '+972-99-999-9999',
     },
+
+    'hello there': {
+        'testVariable': 567,
+        'badly-named-variable': 890,
+    },
 };
 
 const expressionsAndExpectedResults = {
@@ -1452,6 +1457,55 @@ const expressionsAndExpectedResults = {
         expectedResult: true,
 
     },
+
+    'bad variable': {
+
+        expression: 'hello there.testVariable == 567',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'bad member': {
+
+        expression: 'hello there.badly-named-variable == 890',
+        variableObjects: exampleVariables,
+        expectedValidity: false,
+        expectedResult: false,
+    },
+
+    'Variable()': {
+
+        expression: 'Variable("hello there").testVariable == 567',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'Member()': {
+
+        expression: 'Member(Variable("hello there"), "badly-named-variable") == 890',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'Variable() 2': {
+
+        expression: 'Variable("author").name == "Alon Diamant"',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'Member() 2': {
+
+        expression: 'Member(author.github, "repositories") == 12',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
 
 };
 
