@@ -54,12 +54,12 @@ console.log(
 
 ### Types
 
-|String|Type|Example|
-|------|:--:|:-----:|
-|True/False|\"hello\"<br>'there'|Empty string is false: ''<br>Non-empty string is true: 'something'<br>String comparison is lexicographic|
+|Type|Example|True/False|
+|----|:-----:|:--------:|
+|String|\"hello\"<br>'there'|Empty string is false: ''<br>Non-empty string is true: 'something'<br>String comparison is lexicographic|
 |Number|5<br>3.4<br>1.79E+308|0 is false<br>any non-0 number is true|
-|Boolean|true<br>false|Null|
-|null|always false|true is true<br>false is false|
+|Boolean|true<br>false|true is true<br>false is false|
+|null|Null|always false|
 
 ### Variables and Members
 
@@ -78,13 +78,13 @@ console.log(
 
 |Operator|Operation|
 |--------|:-------:|
-|Add, String Concatenation|+|
-|Subtract|-|
-|Multiply|*|
-|Divide|/|
-|Modulus|%|
-|Logical AND|&&|
-|Logical OR|&#124;&#124;|
+|+|Add, String Concatenation|
+|-|Subtract|
+|*|Multiply|
+|/|Divide|
+|%|Modulus|
+|&&|Logical AND|
+|&#124;&#124;|Logical OR|
 
 ### Comparisons
 
