@@ -50,13 +50,75 @@ console.log(
 );
 ```
 
-## Function Reference
+## Reference
 
-...
-...
-TODO
-...
-...
+### Types
+
+|String|Type|Example|
+|------|:--:|:-----:|
+|True/False|\"hello\"<br>'there'|Empty string is false: ''<br>Non-empty string is true: 'something'<br>String comparison is lexicographic|
+|Number|5<br>3.4<br>1.79E+308|0 is false<br>any non-0 number is true|
+|Boolean|true<br>false|Null|
+|null|always false|true is true<br>false is false|
+
+### Variables and Members
+
+  * You can then use the members of each variable.  
+  * To access variables that have a non-standard (i.e. only alphanumeric and _ characters) names, use the Variable() function.
+  * To access variable members that have a non-standard (i.e. only alphanumeric and _ characters) names, use the Member() function.
+
+### Unary Operators
+
+|Operator|Operation|
+|--------|:-------:|
+|-|Negation of numbers|
+|!|Logical NOT|
+
+### Binary Operators
+
+|Operator|Operation|
+|--------|:-------:|
+|Add, String Concatenation|+|
+|Subtract|-|
+|Multiply|*|
+|Divide|/|
+|Modulus|%|
+|Logical AND|&&|
+|Logical OR|&#124;&#124;|
+
+### Comparisons
+
+|Operator|Operation|
+|--------|:-------:|
+|==|Equal|
+|!=|Not equal|
+|>|Greater than|
+|>=|Greater than or equal|
+|<|Less than|
+|>=|Less than or equal|
+
+### Functions
+
+|Function Name|Parameters|Return value|Example|
+|-------------|:--------:|:----------:|:-----:|
+|String|0: number or string|string of input value|String(40) == '40'|
+|Number|0: number or string|number of input value|Number('50') == 50<br>Number('hello') is invalid|
+|Boolean|0: number or string|boolean of input value|Boolean('123') == true<br>Boolean('') == false<br>Boolean(583) == true<br>Boolean(0) == false|
+|round|0: number|rounded number|round(1.3) == 1<br>round(1.95) == 2|
+|floor|0: number|number rounded to floor|floor(1.3) == 1<br>floor(1.95) == 1|
+|upper|0: string|string in upper case|upper('hello') == 'HELLO'|
+|lower|0: string|string in lower case|lower('BYE BYE') == 'bye bye'|
+|trim|0: string|trimmed string|trim(\"   abc   \") == \"abc\"|
+|trimLeft|0: string|left trimmed string|trimLeft(\"   abc   \") == \"abc   \"|
+|trimRight|0: string|right trimmed string|trimRight(\"   abc   \") == \"   abc\"|
+|replace|0: string - main string<br>1: string - substring to find<br>2: string - substring to replace|replace all instances of the substring (1) in the main string (0) with the substring (2)|replace('hello there', 'e', 'a') == 'hallo thara'|
+|substring|0: string - main string<br>1: string - index to start<br>2: string - index to end|returns a substring of a string|substring(\"hello world\", 6, 11) == \"world\"|
+|length|string|length of a string|length(\"gump\") == 4|
+|includes|0: string - main string<br>1: string - string to search for|whether a search string is found inside the main string|includes(\"codefresh\", \"odef\") == true|
+|indexOf|0: string - main string<br>1: string - string to search for|index of a search string if it is found inside the main string|indexOf(\"codefresh\", \"odef\") == 1|
+|match|0: string - main string<br>1: string - regular expression string, [JS style](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions)<br>2: boolean - ignore case|search for a regular expression inside a string, ignoring or not ignoring case|match(\"hello there you\", \"..ll.\", false) == true<br>match(\"hello there you\", \"..LL.\", false) == false<br>match(\"hello there you\", \"hell$\", true) == false<br>match(\"hello there you\", \"^hell\", true) == true<br>match(\"hello there you\", \"bye\", false) == false|
+|Variable|string|Lookup the value of a variable|Variable('someVariable')|
+|Member|0: string - variable name<br>1: string - member name|Lookup the value of a member of a variable|Member('someVariable', 'workingDirectory')|
 
 
 ## Examples
