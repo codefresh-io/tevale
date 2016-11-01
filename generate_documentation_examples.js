@@ -1444,13 +1444,13 @@ for (const testCaseName of Object.keys(expressionsAndExpectedResults)) {
     const testCase = expressionsAndExpectedResults[testCaseName];
 
     let errorMessage =
-              expressionEvaluator.validateSingleExpression(
+              expressionEvaluator.validateExpression(
                   testCase.expression,
                   testCase.variableObjects
               );
     errorMessage = errorMessage.length > 0 ? errorMessage[0] : '';
     const actualResult   =
-              expressionEvaluator.evaluateSingleExpression(
+              expressionEvaluator.evaluateExpression(
                   testCase.expression,
                   testCase.variableObjects
               );

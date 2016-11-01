@@ -545,7 +545,7 @@ function _validateAndEvaluateExpression(expression, variables) {
 
         return { evaluatedResult, errorMessage: null };
     } catch (err) {
-        console.log(err.stack);
+        // console.log(err.stack);
         return { evaluatedResult: null, errorMessage: err.message };
     }
 }
@@ -558,7 +558,7 @@ function _validateAndEvaluateExpression(expression, variables) {
 
 // Verify an expression, making sure it is valid. It will return an empty array if fine, otherwise
 // an array of one or more strings found when verifying the expression.
-function validateSingleExpression(expression, variables) {
+function validateExpression(expression, variables) {
 
     const validateAndEvaluateResult = _validateAndEvaluateExpression(expression, variables);
 
@@ -571,7 +571,7 @@ function validateSingleExpression(expression, variables) {
 
 // Evaluate a single expression, seeing whether its value is truthy or not. If it does not pass
 // validation, it will be falsey.
-function evaluateSingleExpression(expression, variables) {
+function evaluateExpression(expression, variables) {
 
     const validateAndEvaluateResult = _validateAndEvaluateExpression(expression, variables);
 
@@ -585,11 +585,11 @@ function evaluateSingleExpression(expression, variables) {
 }
 
 module.exports = {
-    evaluateSingleExpression,
-    validateSingleExpression,
+    evaluateExpression,
+    validateExpression,
 };
 
 // export {
-//     evaluateSingleExpression,
-//     validateSingleExpression
+//     evaluateExpression,
+//     validateExpression
 // };

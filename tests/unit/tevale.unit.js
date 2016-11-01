@@ -9,13 +9,13 @@ const sinonChai = require('sinon-chai');
 
 chai.use(sinonChai);
 
-const expressionEvaluator = require('../../src/expression_evaluator');
+const tevale = require('../../src/tevale');
 
-// import { evaluateSingleExpression, validateSingleExpression }
+// import { evaluateExpression, validateExpression }
 //     from "../../src/expression_evaluator";
 // const expression_evaluator = {
-//     evaluateSingleExpression,
-//     validateSingleExpression
+//     evaluateExpression,
+//     validateExpression
 // };
 
 
@@ -1524,12 +1524,12 @@ describe(
                     const expectedResult   = testCase.expectedResult;
 
                     const actualValidity =
-                              expressionEvaluator.validateSingleExpression(
+                              tevale.validateExpression(
                                   testCase.expression,
                                   testCase.variableObjects
                               ).length === 0;
                     const actualResult   =
-                              expressionEvaluator.evaluateSingleExpression(
+                              tevale.evaluateExpression(
                                   testCase.expression,
                                   testCase.variableObjects
                               );

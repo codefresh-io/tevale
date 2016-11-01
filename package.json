@@ -1,12 +1,12 @@
 {
-  "name": "cf-expression-parser",
+  "name": "tevale",
   "version": "0.9.0",
-  "description": "A parser that accepts a set of named objects (with properties) and an expression, verifies syntax and evaluates the expression.",
-  "homepage": "https://github.com/codefresh-io/cf-expression-parser",
+  "description": "Tevale is the tiny evaluator of expressions, which accepts a set of variables (named objects with properties) and an expression, validates its syntax and evaluates the expression.",
+  "homepage": "https://github.com/codefresh-io/tevale",
   "author": "Alon Diamant (https://github.com/advance512)",
   "repository": {
     "type": "git",
-    "url": "git@github.com:codefresh-io/cf-expression-parser.git"
+    "url": "git@github.com:codefresh-io/tevale.git"
   },
   "license": "MIT",
   "scripts": {

@@ -1,8 +1,11 @@
-# Expression Evaluator
+# tevale
 
-> A parser that accepts a set of named objects (with properties) and an expression, verifies syntax and evaluates the expression.
+> Tevale is the tiny evaluator of expressions, which accepts a set of variables (named objects with properties) and an expression, validates its syntax and evaluates the expression. 
 
 Developed in [Codefresh](https://www.codefresh.io).
+
+Its goal is to allow the evaluations of expressions (in a variable context) so as to generate a boolean true/false result.
+It was designed to be embeded into scripts that contain various entities and require the evaluation of an expression to make a yes/no decision.
 
 ### Features
 
@@ -20,7 +23,7 @@ $ npm install cf-expression-evaluator --save
 ## Usage
 
 ```js
-const expressionEvaluator = require('expression_evaluator');
+const tevale = require('tevale');
 const variables = {
     "author": {
         "name": "Alon Diamant",
@@ -38,7 +41,7 @@ const variables = {
 }
 
 console.log(
-    expressionEvaluator.evaluateSingleExpression(
+    tevale.evaluateExpression(
         'match(author.name, "alon", true) && ' +
         'author.github.repositories > 10 && ' +
         'Number(substring(company.phoneNumber, 1, 4)) / 2 == 486',
