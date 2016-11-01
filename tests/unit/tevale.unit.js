@@ -11,14 +11,6 @@ chai.use(sinonChai);
 
 const tevale = require('../../src/tevale');
 
-// import { evaluateExpression, validateExpression }
-//     from "../../src/expression_evaluator";
-// const expression_evaluator = {
-//     evaluateExpression,
-//     validateExpression
-// };
-
-
 const exampleVariables = {
     'somePositiveNumericValue': 123,
     'someZeroValue': 0,

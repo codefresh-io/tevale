@@ -9,7 +9,6 @@
 
 const jsep = require('jsep');
 const _    = require('lodash');
-// import parse from 'jsep';
 
 //------------------------------------------------------------------------------
 // Helpers
@@ -597,8 +596,3 @@ module.exports = {
     evaluateExpression,
     validateExpression,
 };
-
-// export {
-//     evaluateExpression,
-//     validateExpression
-// };
