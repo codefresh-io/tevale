@@ -34,8 +34,8 @@ const CONDITIONAL_EXP = 'ConditionalExpression';
 const ARRAY_EXP       = 'ArrayExpression';
 
 const BINARY_OPERATOR_ALLOWED_TYPES = {
-    '==': ['number', 'string', 'boolean'],
-    '!=': ['number', 'string', 'boolean'],
+    '==': ['number', 'string', 'nullableString', 'object', 'boolean'],
+    '!=': ['number', 'string', 'nullableString', 'object', 'boolean'],
     '<': ['number', 'string'],
     '>': ['number', 'string'],
     '<=': ['number', 'string'],
@@ -245,14 +245,22 @@ function _verifyExpressionsType(operatorType, expressions) {
 
     for (const currentType of allowedTypes) {
         if (expressions.every(
-                (expression) => { return typeof expression === currentType; } // eslint-disable-line
+                (expression) => {
+                    if (currentType === 'nullableString') {
+                        return (expression === null || typeof expression === 'string');
+                    } else {
+                        return typeof expression === currentType; // eslint-disable-line
+                    }
+                }
             )) {
             return true;
         }
     }
 
     const expressionTypes =
-        expressions.map((expression) => { return expression == null ? 'null' : typeof expression; });
+              expressions.map((expression) => {
+                  return expression == null ? 'null' : typeof expression;
+              });
 
     throw new Error(`The operator ${operatorType} cannot be used with ${expressionTypes}. It can only be used with the types: ${allowedTypes}`);
 }
@@ -439,7 +447,8 @@ function _handleFunctionCallExpressionNode(node, variables) {
          currentArgIndex < args.length;
          currentArgIndex += 1) {
 
-        const currentArgType   = args[currentArgIndex] == null ? 'null' : typeof args[currentArgIndex];
+        const currentArgType   = args[currentArgIndex] == null ? 'null' :
+            typeof args[currentArgIndex];
         const expectedArgTypes = functionDefinition.params[currentArgIndex];
 
         // TODO: ES6 this mofo

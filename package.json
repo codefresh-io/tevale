@@ -1,6 +1,6 @@
 {
   "name": "tevale",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Tevale is the tiny evaluator of expressions, which accepts a set of variables (named objects with properties) and an expression, validates its syntax and evaluates the expression.",
   "homepage": "https://github.com/codefresh-io/tevale",
   "author": "Alon Diamant (https://github.com/advance512)",

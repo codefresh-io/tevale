@@ -294,6 +294,13 @@ const expressionsAndExpectedResults = {
         expectedResult: false,
     },
 
+    'string comparison 7': {
+        expression: 'longStringValue == null',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: false,
+    },
+
     // ------------------
 
     'simple object value 1': {
@@ -361,6 +368,20 @@ const expressionsAndExpectedResults = {
 
     'complex object value 5': {
         expression: 'complexObjectValue.internalObjectValue.someBooleanValue == false',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: true,
+    },
+
+    'complex object value 6': {
+        expression: 'complexObjectValue.internalObjectValue == null',
+        variableObjects: exampleVariables,
+        expectedValidity: true,
+        expectedResult: false,
+    },
+
+    'complex object value 7': {
+        expression: 'complexObjectValue.internalObjectValue != null',
         variableObjects: exampleVariables,
         expectedValidity: true,
         expectedResult: true,
@@ -1525,7 +1546,7 @@ describe(
             const testCase = expressionsAndExpectedResults[testCaseName];
 
             it(
-                `case '${testCaseName}'`, () => {
+                `case '${testCaseName}' => ${testCase.expression}`, () => {
 
                     const expectedValidity = testCase.expectedValidity;
                     const expectedResult   = testCase.expectedResult;
