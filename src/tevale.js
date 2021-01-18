@@ -74,7 +74,7 @@ const FUNCTION_DEFINITIONS = {
             ['string'],
         ],
         'function': (containingVariable, keyValue) => {
-            const evaluatedResult = _.get(containingVariable, keyValue, undefined);
+            const evaluatedResult = _.get(containingVariable, keyValue);
 
             if (evaluatedResult === undefined) {
                 throw new Error(`Undefined identifier member: '${keyValue}'`);
@@ -372,7 +372,7 @@ _handleIdentifierNode = function (node, variables) {
     let evaluatedResult;
 
     if (variables.hasOwnProperty(node.name)) { // eslint-disable-line
-        evaluatedResult = _.get(variables, node.name, undefined);
+        evaluatedResult = _.get(variables, node.name);
     }
 
     if (evaluatedResult === undefined) {
@@ -396,7 +396,7 @@ function _handleMemberNode(node, variables) {
     let evaluatedResult;
 
     if (containingVariable.hasOwnProperty(keyValue)) { // eslint-disable-line
-        evaluatedResult = _.get(containingVariable, keyValue, undefined);
+        evaluatedResult = _.get(containingVariable, keyValue);
     }
 
 
@@ -426,7 +426,7 @@ function _handleFunctionCallExpressionNode(node, variables) {
     }
 
     const functionName       = node.callee.name;
-    const functionDefinition = _.get(FUNCTION_DEFINITIONS, functionName, undefined);
+    const functionDefinition = _.get(FUNCTION_DEFINITIONS, functionName);
 
     if (functionDefinition === undefined) {
         throw new Error(`Unknown function: '${functionName}'`);
