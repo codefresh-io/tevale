@@ -31,6 +31,6 @@
   },
   "dependencies": {
     "jsep": "^0.3.0",
-    "lodash": "4.17.20"
+    "lodash": "^4.17.21"
   }
 }
