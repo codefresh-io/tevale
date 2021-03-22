@@ -56,6 +56,6 @@ gulp.task(
     }
 );
 
-gulp.task('test', plugins.sequence('coverage', 'test:integration'));
+gulp.task('test', plugins.sequence('coverage', 'test:unit'));
 gulp.task('default', plugins.sequence('lint', 'test'));
 
