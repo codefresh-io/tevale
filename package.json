@@ -11,7 +11,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "setup": "yarn install && gulp"
+    "test": "gulp"
   },
   "devDependencies": {
     "babel": "^5.6.7",

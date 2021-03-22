@@ -12,7 +12,7 @@ steps:
     working_directory: ${{main_clone}}
     commands:
       - yarn install --frozen-lockfile
-      - gulp
+      - yarn test
 
   deploy_to_npm:
     type: npm-publish
