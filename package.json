@@ -30,7 +30,7 @@
     "sinon-chai": "^2.8.0"
   },
   "dependencies": {
-    "jsep": "^0.3.0",
+    "jsep": "^0.4.0",
     "lodash": "^4.17.21"
   }
 }
